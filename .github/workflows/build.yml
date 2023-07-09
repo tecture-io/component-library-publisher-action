@@ -25,8 +25,8 @@ jobs:
           git config --local user.name "GitHub Action"
           git add -A
           git commit -m "New build"
-          yarn config set version-tag-prefix "v"
-          yarn version --patch
+#          yarn config set version-tag-prefix "v"
+#          yarn version --patch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
