@@ -33,7 +33,7 @@ const run = async () => {
           const fileContent = fs.readFileSync(filePath, "utf-8");
           const jsonData = JSON.parse(fileContent) as { name: string };
 
-          core.info("JSON Data,");
+          core.info("JSON Data");
           core.info(JSON.stringify(jsonData));
 
           const collection = {
