@@ -14060,9 +14060,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         files.forEach((file) => {
             if (file.filename.endsWith("collection.json")) {
                 const filePath = path__WEBPACK_IMPORTED_MODULE_3__.resolve(".", file.filename);
-                const [_, category] = file.filename.split("/");
+                const [uid, category] = file.filename.split("/");
                 if (file.status === "added") {
-                    const uid = category.replace(".json", "");
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Added collection.json - Category: ${uid}`);
                     // Read collection.json file
                     const fileContent = fs__WEBPACK_IMPORTED_MODULE_2__.readFileSync(filePath, "utf-8");
@@ -14077,7 +14076,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(JSON.stringify(collection));
                 }
                 else if (file.status === "modified") {
-                    const uid = category.replace(".json", "");
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Added collection.json - Category: ${uid}`);
                     // Read collection.json file
                     const fileContent = fs__WEBPACK_IMPORTED_MODULE_2__.readFileSync(filePath, "utf-8");
