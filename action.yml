@@ -1,0 +1,15 @@
+name: 'Tecture component library publisher'
+description: 'Publishes architectural component library to tecture'
+author: 'tecture.io'
+inputs:
+  github_token:
+    required: true
+    description: 'Github token for the environment'
+    default: ''
+  database_key:
+    required: true
+    description: 'Database key for the environment'
+    default: ''
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

@@ -1,0 +1,21 @@
+{
+  "name": "component-library-publisher-action",
+  "version": "1.0.0",
+  "description": "Github action for publishing tecture component library",
+  "main": "src/main.ts",
+  "repository": "https://github.com/tecture-io/component-library-publisher-action",
+  "author": "Tecture",
+  "license": "MIT",
+  "scripts": {
+    "build": "ncc build src/main.ts --source-map --out dist"
+  },
+  "dependencies": {
+    "@types/node": "^20.4.1",
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.36.1",
+    "prettier": "^3.0.0",
+    "ts-node": "^10.9.1"
+  }
+}
