@@ -1,6 +1,6 @@
 {
   "name": "component-library-publisher-action",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Github action for publishing tecture component library",
   "main": "src/main.ts",
   "repository": "https://github.com/tecture-io/component-library-publisher-action",
