@@ -21,11 +21,12 @@ jobs:
 
       - name: Bump version and push changes
         run: |
-          yarn version --minor
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          yarn config set version-tag-prefix "v"
+          yarn version --patch
           git add -A
-          git commit -m "Release new version"
+          git commit -m "New build"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
