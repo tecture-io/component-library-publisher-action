@@ -13972,35 +13972,6 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -14021,18 +13992,52 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+// ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(5438);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _octokit_rest__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(5375);
-/* harmony import */ var _octokit_rest__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__nccwpck_require__.n(_octokit_rest__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(7147);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(1017);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__nccwpck_require__.n(path__WEBPACK_IMPORTED_MODULE_3__);
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5438);
+// EXTERNAL MODULE: ./node_modules/@octokit/rest/dist-node/index.js
+var dist_node = __nccwpck_require__(5375);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
+;// CONCATENATED MODULE: ./src/services/collection-service.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+const createCollection = (collection) => __awaiter(void 0, void 0, void 0, function* () {
+    // Create new collection on Fauna DB
+    core.info(`Create collection - Category: ${collection.uid}`);
+});
+const updateCollection = (collection) => __awaiter(void 0, void 0, void 0, function* () {
+    // Update collection on Fauna DB
+    core.info(`Update collection - Category: ${collection.uid}`);
+});
+const deleteCollection = (uid) => __awaiter(void 0, void 0, void 0, function* () {
+    // Delete collection on Fauna DB
+    core.info(`Delete collection - Category: ${uid}`);
+});
+
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
+;// CONCATENATED MODULE: ./src/file-utils.ts
+
+const readJsonContent = (filePath) => {
+    const fileContent = external_fs_.readFileSync(filePath, "utf-8");
+    return JSON.parse(fileContent);
+};
+
+;// CONCATENATED MODULE: ./src/main.ts
+var main_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -14046,57 +14051,45 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
-const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("github_token", { required: true });
-const octokit = new _octokit_rest__WEBPACK_IMPORTED_MODULE_4__.Octokit({ auth: `token ${token}` });
-const run = () => __awaiter(void 0, void 0, void 0, function* () {
+
+const token = core.getInput("github_token", { required: true });
+const octokit = new dist_node.Octokit({ auth: `token ${token}` });
+const run = () => main_awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { owner, repo, number: pull_number } = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.issue;
+        const { owner, repo, number: pull_number } = github.context.issue;
         const { data: files } = yield octokit.pulls.listFiles({
             owner,
             repo,
             pull_number,
         });
         // Process collections
-        files.forEach((file) => {
+        for (const file of files) {
             if (file.filename.endsWith("collection.json")) {
-                const filePath = path__WEBPACK_IMPORTED_MODULE_3__.resolve(".", file.filename);
-                const [uid, category] = file.filename.split("/");
+                const filePath = external_path_.resolve(".", file.filename);
+                const [uid] = file.filename.split("/");
                 if (file.status === "added") {
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Added collection.json - Category: ${uid}`);
-                    // Read collection.json file
-                    const fileContent = fs__WEBPACK_IMPORTED_MODULE_2__.readFileSync(filePath, "utf-8");
-                    const jsonData = JSON.parse(fileContent);
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("JSON Data");
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(JSON.stringify(jsonData));
-                    const collection = {
+                    const jsonData = readJsonContent(filePath);
+                    yield createCollection({
                         uid,
                         name: jsonData.name,
-                    };
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("JSON Data");
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(JSON.stringify(collection));
+                    });
                 }
                 else if (file.status === "modified") {
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Added collection.json - Category: ${uid}`);
-                    // Read collection.json file
-                    const fileContent = fs__WEBPACK_IMPORTED_MODULE_2__.readFileSync(filePath, "utf-8");
-                    const jsonData = JSON.parse(fileContent);
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("JSON Data");
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(JSON.stringify(jsonData));
-                    const collection = {
+                    const jsonData = readJsonContent(filePath);
+                    yield updateCollection({
                         uid,
                         name: jsonData.name,
-                    };
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("JSON Data");
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(JSON.stringify(collection));
+                    });
                 }
                 else if (file.status === "removed") {
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Removed collection.json - Category: ${category}`);
+                    yield deleteCollection(uid);
                 }
             }
-        });
+        }
+        // Process components
     }
     catch (error) {
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(error.message);
+        core.setFailed(error.message);
     }
 });
 run();
