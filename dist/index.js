@@ -14067,7 +14067,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     // Read collection.json file
                     const fileContent = fs__WEBPACK_IMPORTED_MODULE_2__.readFileSync(filePath, "utf-8");
                     const jsonData = JSON.parse(fileContent);
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("JSON Data,");
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("JSON Data");
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(JSON.stringify(jsonData));
                     const collection = {
                         uid,
