@@ -14077,7 +14077,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(JSON.stringify(collection));
                 }
                 else if (file.status === "modified") {
-                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Modified collection.json - Category: ${category}`);
+                    const uid = category.replace(".json", "");
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Added collection.json - Category: ${uid}`);
+                    // Read collection.json file
+                    const fileContent = fs__WEBPACK_IMPORTED_MODULE_2__.readFileSync(filePath, "utf-8");
+                    const jsonData = JSON.parse(fileContent);
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("JSON Data");
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(JSON.stringify(jsonData));
+                    const collection = {
+                        uid,
+                        name: jsonData.name,
+                    };
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("JSON Data");
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(JSON.stringify(collection));
                 }
                 else if (file.status === "removed") {
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Removed collection.json - Category: ${category}`);
