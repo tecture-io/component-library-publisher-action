@@ -44,7 +44,23 @@ const run = async () => {
           core.info("JSON Data");
           core.info(JSON.stringify(collection));
         } else if (file.status === "modified") {
-          core.info(`Modified collection.json - Category: ${category}`);
+          const uid = category.replace(".json", "");
+          core.info(`Added collection.json - Category: ${uid}`);
+
+          // Read collection.json file
+          const fileContent = fs.readFileSync(filePath, "utf-8");
+          const jsonData = JSON.parse(fileContent) as { name: string };
+
+          core.info("JSON Data");
+          core.info(JSON.stringify(jsonData));
+
+          const collection = {
+            uid,
+            name: jsonData.name,
+          };
+
+          core.info("JSON Data");
+          core.info(JSON.stringify(collection));
         } else if (file.status === "removed") {
           core.info(`Removed collection.json - Category: ${category}`);
         }
