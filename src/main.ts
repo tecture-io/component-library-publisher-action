@@ -23,10 +23,9 @@ const run = async () => {
       if (file.filename.endsWith("collection.json")) {
         const filePath = path.resolve(".", file.filename);
 
-        const [_, category] = file.filename.split("/");
+        const [uid, category] = file.filename.split("/");
 
         if (file.status === "added") {
-          const uid = category.replace(".json", "");
           core.info(`Added collection.json - Category: ${uid}`);
 
           // Read collection.json file
@@ -44,7 +43,6 @@ const run = async () => {
           core.info("JSON Data");
           core.info(JSON.stringify(collection));
         } else if (file.status === "modified") {
-          const uid = category.replace(".json", "");
           core.info(`Added collection.json - Category: ${uid}`);
 
           // Read collection.json file
