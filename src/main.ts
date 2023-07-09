@@ -1,8 +1,13 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { Octokit } from "@octokit/rest";
-import * as fs from "fs";
 import * as path from "path";
+import {
+  createCollection,
+  deleteCollection,
+  updateCollection,
+} from "./services/collection-service";
+import { readJsonContent } from "./file-utils";
 
 const token = core.getInput("github_token", { required: true });
 
@@ -19,51 +24,30 @@ const run = async () => {
     });
 
     // Process collections
-    files.forEach((file) => {
+    for (const file of files) {
       if (file.filename.endsWith("collection.json")) {
         const filePath = path.resolve(".", file.filename);
-
-        const [uid, category] = file.filename.split("/");
+        const [uid] = file.filename.split("/");
 
         if (file.status === "added") {
-          core.info(`Added collection.json - Category: ${uid}`);
-
-          // Read collection.json file
-          const fileContent = fs.readFileSync(filePath, "utf-8");
-          const jsonData = JSON.parse(fileContent) as { name: string };
-
-          core.info("JSON Data");
-          core.info(JSON.stringify(jsonData));
-
-          const collection = {
+          const jsonData = readJsonContent(filePath);
+          await createCollection({
             uid,
             name: jsonData.name,
-          };
-
-          core.info("JSON Data");
-          core.info(JSON.stringify(collection));
+          });
         } else if (file.status === "modified") {
-          core.info(`Added collection.json - Category: ${uid}`);
-
-          // Read collection.json file
-          const fileContent = fs.readFileSync(filePath, "utf-8");
-          const jsonData = JSON.parse(fileContent) as { name: string };
-
-          core.info("JSON Data");
-          core.info(JSON.stringify(jsonData));
-
-          const collection = {
+          const jsonData = readJsonContent(filePath);
+          await updateCollection({
             uid,
             name: jsonData.name,
-          };
-
-          core.info("JSON Data");
-          core.info(JSON.stringify(collection));
+          });
         } else if (file.status === "removed") {
-          core.info(`Removed collection.json - Category: ${category}`);
+          await deleteCollection(uid);
         }
       }
-    });
+    }
+
+    // Process components
   } catch (error) {
     core.setFailed(error.message);
   }
