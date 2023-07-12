@@ -6,9 +6,13 @@ inputs:
     required: true
     description: 'Github token for the environment'
     default: ''
-  database_key:
+  api_key:
     required: true
-    description: 'Database key for the environment'
+    description: 'Tecture API key for the environment'
+    default: ''
+  server_url:
+    required: true
+    description: 'Server URL for the environment'
     default: ''
 runs:
   using: 'node16'

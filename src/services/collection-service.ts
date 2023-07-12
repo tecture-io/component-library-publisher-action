@@ -1,26 +1,35 @@
 import { Collection } from "../types/collection";
 import * as core from "@actions/core";
-import * as faunadb from "faunadb";
+import axios from "axios";
 
-const faunaKey = core.getInput("database_key", { required: true });
-const client = new faunadb.Client({ secret: faunaKey });
-const q = faunadb.query;
-
-export const createCollection = async (collection: Collection) => {
-  // Create new collection on Fauna DB
-  await client.query(
-    q.Create(q.Collection("collections"), { data: collection }),
-  );
+/**
+ * Create or update a collection.
+ * @param collection
+ */
+export const createOrUpdateCollection = async (collection: Collection) => {
+  const serverUrl = core.getInput("server_url", { required: true });
+  const apiKey = core.getInput("api_key", { required: true });
+  await axios.post(`https://${serverUrl}/api/collections`, collection, {
+    headers: {
+      Authorization: apiKey,
+    },
+  });
 
   core.info(`Created collection - Category: ${collection.uid}`);
 };
 
-export const updateCollection = async (collection: Collection) => {
-  // Update collection on Fauna DB
-  core.info(`Update collection - Category: ${collection.uid}`);
-};
-
+/**
+ * Delete a collection by uid
+ * @param uid
+ */
 export const deleteCollection = async (uid: string) => {
-  // Delete collection on Fauna DB
+  const serverUrl = core.getInput("server_url", { required: true });
+  const apiKey = core.getInput("api_key", { required: true });
+
+  await axios.delete(`https://${serverUrl}/api/collections/${uid}`, {
+    headers: {
+      Authorization: apiKey,
+    },
+  });
   core.info(`Delete collection - Category: ${uid}`);
 };

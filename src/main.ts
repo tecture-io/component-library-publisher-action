@@ -3,11 +3,14 @@ import * as github from "@actions/github";
 import { Octokit } from "@octokit/rest";
 import * as path from "path";
 import {
-  createCollection,
+  createOrUpdateCollection,
   deleteCollection,
-  updateCollection,
 } from "./services/collection-service";
 import { readJsonContent } from "./file-utils";
+import {
+  createOrUpdateComponent,
+  deleteComponent,
+} from "./services/component-service";
 
 const token = core.getInput("github_token", { required: true });
 
@@ -23,31 +26,53 @@ const run = async () => {
       pull_number,
     });
 
-    // Process collections
+    // Create or update collections
     for (const file of files) {
       if (file.filename.endsWith("collection.json")) {
         const filePath = path.resolve(".", file.filename);
         const [uid] = file.filename.split("/");
 
-        if (file.status === "added") {
+        if (file.status === "added" || file.status === "modified") {
           const jsonData = readJsonContent(filePath);
-          await createCollection({
+          await createOrUpdateCollection({
             uid,
             name: jsonData.name,
           });
-        } else if (file.status === "modified") {
-          const jsonData = readJsonContent(filePath);
-          await updateCollection({
-            uid,
-            name: jsonData.name,
-          });
-        } else if (file.status === "removed") {
-          await deleteCollection(uid);
         }
       }
     }
 
-    // Process components
+    // Create, update or delete components
+    for (const file of files) {
+      if (file.filename.endsWith("component.json")) {
+        const filePath = path.resolve(".", file.filename);
+        const [collectionUid, componentUid] = file.filename.split("/");
+
+        if (file.status === "added" || file.status === "modified") {
+          const jsonData = readJsonContent(filePath);
+          await createOrUpdateComponent(collectionUid, {
+            uid: componentUid,
+            name: jsonData.name,
+            description: jsonData.description || "",
+          });
+        }
+
+        if (file.status === "removed") {
+          await deleteComponent(collectionUid, componentUid);
+        }
+      }
+    }
+
+    // Delete collections
+    for (const file of files) {
+      if (file.filename.endsWith("collection.json")) {
+        const [uid] = file.filename.split("/");
+
+        if (file.status === "removed") {
+          await deleteCollection(uid);
+        }
+      }
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
