@@ -20979,6 +20979,7 @@ const run = () => main_awaiter(void 0, void 0, void 0, function* () {
                     yield createOrUpdateComponent(collectionUid, {
                         uid: componentUid,
                         name: jsonData.name,
+                        short: jsonData.short || "",
                         description: jsonData.description || "",
                     });
                 }
