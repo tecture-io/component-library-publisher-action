@@ -53,6 +53,7 @@ const run = async () => {
           await createOrUpdateComponent(collectionUid, {
             uid: componentUid,
             name: jsonData.name,
+            short: jsonData.short || "",
             description: jsonData.description || "",
           });
         }
