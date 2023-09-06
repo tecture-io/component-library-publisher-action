@@ -20947,14 +20947,31 @@ var main_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arg
 
 const token = core.getInput("github_token", { required: true });
 const octokit = new dist_node.Octokit({ auth: `token ${token}` });
+function getAllFiles(owner, repo, pull_number) {
+    return main_awaiter(this, void 0, void 0, function* () {
+        let allFiles = [];
+        let page = 1;
+        while (true) {
+            const { data: files } = yield octokit.pulls.listFiles({
+                owner,
+                repo,
+                pull_number,
+                per_page: 100,
+                page,
+            });
+            if (files.length === 0) {
+                break; // Exit loop if no more files
+            }
+            allFiles = allFiles.concat(files);
+            page++;
+        }
+        return allFiles;
+    });
+}
 const run = () => main_awaiter(void 0, void 0, void 0, function* () {
     try {
         const { owner, repo, number: pull_number } = github.context.issue;
-        const { data: files } = yield octokit.pulls.listFiles({
-            owner,
-            repo,
-            pull_number,
-        });
+        const files = yield getAllFiles(owner, repo, pull_number);
         // Create or update collections
         for (const file of files) {
             if (file.filename.endsWith("collection.json")) {
@@ -21002,7 +21019,7 @@ const run = () => main_awaiter(void 0, void 0, void 0, function* () {
         core.setFailed(error.message);
     }
 });
-run();
+run().catch(console.error);
 
 })();
 
