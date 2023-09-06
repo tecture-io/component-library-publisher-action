@@ -13,18 +13,37 @@ import {
 } from "./services/component-service";
 
 const token = core.getInput("github_token", { required: true });
-
 const octokit = new Octokit({ auth: `token ${token}` });
+
+async function getAllFiles(owner, repo, pull_number) {
+  let allFiles = [];
+  let page = 1;
+
+  while (true) {
+    const { data: files } = await octokit.pulls.listFiles({
+      owner,
+      repo,
+      pull_number,
+      per_page: 100, // Fetch 100 files per request
+      page,
+    });
+
+    if (files.length === 0) {
+      break; // Exit loop if no more files
+    }
+
+    allFiles = allFiles.concat(files);
+    page++;
+  }
+
+  return allFiles;
+}
 
 const run = async () => {
   try {
     const { owner, repo, number: pull_number } = github.context.issue;
 
-    const { data: files } = await octokit.pulls.listFiles({
-      owner,
-      repo,
-      pull_number,
-    });
+    const files = await getAllFiles(owner, repo, pull_number);
 
     // Create or update collections
     for (const file of files) {
@@ -79,4 +98,4 @@ const run = async () => {
   }
 };
 
-run();
+run().catch(console.error);
