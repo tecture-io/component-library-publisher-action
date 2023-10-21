@@ -20850,13 +20850,13 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 /**
  * Create or update a collection.
  * @param collection
+ * @param authToken
  */
-const createOrUpdateCollection = (collection) => __awaiter(void 0, void 0, void 0, function* () {
+const createOrUpdateCollection = (collection, authToken) => __awaiter(void 0, void 0, void 0, function* () {
     const serverUrl = core.getInput("server_url", { required: true });
-    const apiKey = core.getInput("api_key", { required: true });
-    yield lib_axios.post(`https://${serverUrl}/api/collections`, collection, {
+    yield lib_axios.post(`https://${serverUrl}/component-packs`, collection, {
         headers: {
-            Authorization: apiKey,
+            Authorization: `Bearer ${authToken}`,
         },
     });
     core.info(`Created collection - Category: ${collection.uid}`);
@@ -20864,13 +20864,13 @@ const createOrUpdateCollection = (collection) => __awaiter(void 0, void 0, void 
 /**
  * Delete a collection by uid
  * @param uid
+ * @param authToken
  */
-const deleteCollection = (uid) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteCollection = (uid, authToken) => __awaiter(void 0, void 0, void 0, function* () {
     const serverUrl = core.getInput("server_url", { required: true });
-    const apiKey = core.getInput("api_key", { required: true });
-    yield lib_axios["delete"](`https://${serverUrl}/api/collections/${uid}`, {
+    yield lib_axios["delete"](`https://${serverUrl}/component-packs/${uid}`, {
         headers: {
-            Authorization: apiKey,
+            Authorization: `Bearer ${authToken}`,
         },
     });
     core.info(`Delete collection - Category: ${uid}`);
@@ -20901,13 +20901,13 @@ var component_service_awaiter = (undefined && undefined.__awaiter) || function (
  * Create or update a component.
  * @param collectionUid
  * @param component
+ * @param authToken
  */
-const createOrUpdateComponent = (collectionUid, component) => component_service_awaiter(void 0, void 0, void 0, function* () {
+const createOrUpdateComponent = (collectionUid, component, authToken) => component_service_awaiter(void 0, void 0, void 0, function* () {
     const serverUrl = core.getInput("server_url", { required: true });
-    const apiKey = core.getInput("api_key", { required: true });
-    yield lib_axios.post(`https://${serverUrl}/api/collections/${collectionUid}/components`, component, {
+    yield lib_axios.post(`https://${serverUrl}/component-packs/${collectionUid}/components`, component, {
         headers: {
-            Authorization: apiKey,
+            Authorization: `Bearer ${authToken}`,
         },
     });
     core.info(`Created or updated component - Component: ${component.uid}`);
@@ -20916,16 +20916,49 @@ const createOrUpdateComponent = (collectionUid, component) => component_service_
  * Delete a component by uid and collectionUid
  * @param collectionUid
  * @param componentUid
+ * @param authToken
  */
-const deleteComponent = (collectionUid, componentUid) => component_service_awaiter(void 0, void 0, void 0, function* () {
+const deleteComponent = (collectionUid, componentUid, authToken) => component_service_awaiter(void 0, void 0, void 0, function* () {
     const serverUrl = core.getInput("server_url", { required: true });
-    const apiKey = core.getInput("api_key", { required: true });
-    yield lib_axios["delete"](`https://${serverUrl}/api/collections/${collectionUid}/components/${componentUid}`, {
+    yield lib_axios["delete"](`https://${serverUrl}/component-packs/${collectionUid}/components/${componentUid}`, {
         headers: {
-            Authorization: apiKey,
+            Authorization: `Bearer ${authToken}`,
         },
     });
     core.info(`Delete component - Component: ${componentUid}`);
+});
+
+;// CONCATENATED MODULE: ./src/services/auth-service.ts
+var auth_service_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+/**
+ * Get an auth token from the auth0 endpoint.
+ */
+const getAuthToken = () => auth_service_awaiter(void 0, void 0, void 0, function* () {
+    const authUrl = core.getInput("auth_url", { required: true });
+    const clientId = core.getInput("client_id", { required: true });
+    const clientSecret = core.getInput("client_secret", { required: true });
+    const audience = core.getInput("audience", { required: true });
+    const response = yield lib_axios.post(authUrl, {
+        client_id: clientId,
+        client_secret: clientSecret,
+        audience: audience,
+        grant_type: "client_credentials",
+    }, {
+        headers: {
+            "Content-Type": "application/json",
+        }
+    });
+    return response.data.access_token;
 });
 
 ;// CONCATENATED MODULE: ./src/main.ts
@@ -20938,6 +20971,7 @@ var main_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arg
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -20970,6 +21004,7 @@ function getAllFiles(owner, repo, pull_number) {
 }
 const run = () => main_awaiter(void 0, void 0, void 0, function* () {
     try {
+        const authToken = yield getAuthToken();
         const { owner, repo, number: pull_number } = github.context.issue;
         const files = yield getAllFiles(owner, repo, pull_number);
         // Create or update collections
@@ -20982,7 +21017,7 @@ const run = () => main_awaiter(void 0, void 0, void 0, function* () {
                     yield createOrUpdateCollection({
                         uid,
                         name: jsonData.name,
-                    });
+                    }, authToken);
                 }
             }
         }
@@ -20996,12 +21031,12 @@ const run = () => main_awaiter(void 0, void 0, void 0, function* () {
                     yield createOrUpdateComponent(collectionUid, {
                         uid: componentUid,
                         name: jsonData.name,
-                        short: jsonData.short || "",
+                        shortDescription: jsonData.short || "",
                         description: jsonData.description || "",
-                    });
+                    }, authToken);
                 }
                 if (file.status === "removed") {
-                    yield deleteComponent(collectionUid, componentUid);
+                    yield deleteComponent(collectionUid, componentUid, authToken);
                 }
             }
         }
@@ -21010,7 +21045,7 @@ const run = () => main_awaiter(void 0, void 0, void 0, function* () {
             if (file.filename.endsWith("collection.json")) {
                 const [uid] = file.filename.split("/");
                 if (file.status === "removed") {
-                    yield deleteCollection(uid);
+                    yield deleteCollection(uid, authToken);
                 }
             }
         }
