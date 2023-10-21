@@ -1,5 +1,5 @@
 import * as core from "@actions/core";
-import axios from "axios/index";
+import axios from "axios";
 
 /**
  * Get an auth token from the auth0 endpoint.
