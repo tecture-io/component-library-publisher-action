@@ -11,6 +11,7 @@ import {
   createOrUpdateComponent,
   deleteComponent,
 } from "./services/component-service";
+import {getAuthToken} from "./services/auth-service";
 
 const token = core.getInput("github_token", { required: true });
 const octokit = new Octokit({ auth: `token ${token}` });
@@ -41,6 +42,9 @@ async function getAllFiles(owner, repo, pull_number) {
 
 const run = async () => {
   try {
+
+    const authToken = await getAuthToken();
+
     const { owner, repo, number: pull_number } = github.context.issue;
 
     const files = await getAllFiles(owner, repo, pull_number);
@@ -56,7 +60,7 @@ const run = async () => {
           await createOrUpdateCollection({
             uid,
             name: jsonData.name,
-          });
+          }, authToken);
         }
       }
     }
@@ -72,13 +76,13 @@ const run = async () => {
           await createOrUpdateComponent(collectionUid, {
             uid: componentUid,
             name: jsonData.name,
-            short: jsonData.short || "",
+            shortDescription: jsonData.short || "",
             description: jsonData.description || "",
-          });
+          }, authToken);
         }
 
         if (file.status === "removed") {
-          await deleteComponent(collectionUid, componentUid);
+          await deleteComponent(collectionUid, componentUid, authToken);
         }
       }
     }
@@ -89,7 +93,7 @@ const run = async () => {
         const [uid] = file.filename.split("/");
 
         if (file.status === "removed") {
-          await deleteCollection(uid);
+          await deleteCollection(uid, authToken);
         }
       }
     }

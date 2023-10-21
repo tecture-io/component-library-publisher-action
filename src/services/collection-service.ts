@@ -1,35 +1,35 @@
-import { Collection } from "../types/collection";
+import {Collection} from "../types/collection";
 import * as core from "@actions/core";
 import axios from "axios";
 
 /**
  * Create or update a collection.
  * @param collection
+ * @param authToken
  */
-export const createOrUpdateCollection = async (collection: Collection) => {
-  const serverUrl = core.getInput("server_url", { required: true });
-  const apiKey = core.getInput("api_key", { required: true });
-  await axios.post(`https://${serverUrl}/api/collections`, collection, {
-    headers: {
-      Authorization: apiKey,
-    },
-  });
+export const createOrUpdateCollection = async (collection: Collection, authToken: string) => {
+    const serverUrl = core.getInput("server_url", {required: true});
+    await axios.post(`https://${serverUrl}/component-packs`, collection, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
 
-  core.info(`Created collection - Category: ${collection.uid}`);
+    core.info(`Created collection - Category: ${collection.uid}`);
 };
 
 /**
  * Delete a collection by uid
  * @param uid
+ * @param authToken
  */
-export const deleteCollection = async (uid: string) => {
-  const serverUrl = core.getInput("server_url", { required: true });
-  const apiKey = core.getInput("api_key", { required: true });
+export const deleteCollection = async (uid: string, authToken: string) => {
+    const serverUrl = core.getInput("server_url", {required: true});
 
-  await axios.delete(`https://${serverUrl}/api/collections/${uid}`, {
-    headers: {
-      Authorization: apiKey,
-    },
-  });
-  core.info(`Delete collection - Category: ${uid}`);
+    await axios.delete(`https://${serverUrl}/component-packs/${uid}`, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
+    core.info(`Delete collection - Category: ${uid}`);
 };

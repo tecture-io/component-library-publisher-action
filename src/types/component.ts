@@ -1,6 +1,6 @@
 export interface Component {
   uid: string;
   name: string;
-  short: string;
+  shortDescription: string;
   description: string;
 }
