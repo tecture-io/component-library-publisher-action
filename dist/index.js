@@ -21031,7 +21031,7 @@ const run = () => main_awaiter(void 0, void 0, void 0, function* () {
                     yield createOrUpdateComponent(collectionUid, {
                         uid: componentUid,
                         name: jsonData.name,
-                        shortDescription: jsonData.short || "",
+                        shortDescription: jsonData.shortDescription || "",
                         description: jsonData.description || "",
                     }, authToken);
                 }
