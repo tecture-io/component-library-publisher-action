@@ -77,7 +77,7 @@ const run = async () => {
           await createOrUpdateComponent(collectionUid, {
             uid: componentUid,
             name: jsonData.name,
-            shortDescription: jsonData.short || "",
+            shortDescription: jsonData.shortDescription || "",
             description: jsonData.description || "",
           }, authToken);
         }
