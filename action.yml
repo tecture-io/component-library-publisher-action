@@ -6,13 +6,25 @@ inputs:
     required: true
     description: 'Github token for the environment'
     default: ''
-  api_key:
+  auth_url:
     required: true
-    description: 'Tecture API key for the environment'
+    description: 'Authentication endpoint URL'
     default: ''
   server_url:
     required: true
     description: 'Server URL for the environment'
+    default: ''
+  client_id:
+    required: true
+    description: 'Client ID'
+    default: ''
+  client_secret:
+    required: true
+    description: 'Client Secret'
+    default: ''
+  audience:
+    required: true
+    description: 'Audience'
     default: ''
 runs:
   using: 'node16'
