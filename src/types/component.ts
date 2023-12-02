@@ -3,4 +3,6 @@ export interface Component {
   name: string;
   shortDescription: string;
   description: string;
+  type: string;
+  colour: string;
 }

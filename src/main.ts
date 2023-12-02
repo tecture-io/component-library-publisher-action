@@ -11,7 +11,7 @@ import {
   createOrUpdateComponent,
   deleteComponent,
 } from "./services/component-service";
-import {getAuthToken} from "./services/auth-service";
+import { getAuthToken } from "./services/auth-service";
 
 const token = core.getInput("github_token", { required: true });
 const octokit = new Octokit({ auth: `token ${token}` });
@@ -40,10 +40,8 @@ async function getAllFiles(owner, repo, pull_number) {
   return allFiles;
 }
 
-
 const run = async () => {
   try {
-
     const authToken = await getAuthToken();
 
     const { owner, repo, number: pull_number } = github.context.issue;
@@ -58,10 +56,13 @@ const run = async () => {
 
         if (file.status === "added" || file.status === "modified") {
           const jsonData = readJsonContent(filePath);
-          await createOrUpdateCollection({
-            uid,
-            name: jsonData.name,
-          }, authToken);
+          await createOrUpdateCollection(
+            {
+              uid,
+              name: jsonData.name,
+            },
+            authToken,
+          );
         }
       }
     }
@@ -74,12 +75,18 @@ const run = async () => {
 
         if (file.status === "added" || file.status === "modified") {
           const jsonData = readJsonContent(filePath);
-          await createOrUpdateComponent(collectionUid, {
-            uid: componentUid,
-            name: jsonData.name,
-            shortDescription: jsonData.shortDescription || "",
-            description: jsonData.description || "",
-          }, authToken);
+          await createOrUpdateComponent(
+            collectionUid,
+            {
+              uid: componentUid,
+              name: jsonData.name,
+              shortDescription: jsonData.shortDescription || "",
+              description: jsonData.description || "",
+              type: jsonData.type,
+              colour: jsonData.colour,
+            },
+            authToken,
+          );
         }
 
         if (file.status === "removed") {

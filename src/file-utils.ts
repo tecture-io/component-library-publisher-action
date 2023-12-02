@@ -6,5 +6,7 @@ export const readJsonContent = (filePath: string) => {
     name: string;
     shortDescription?: string;
     description?: string;
+    type?: string;
+    colour?: string;
   };
 };
