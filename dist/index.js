@@ -21033,6 +21033,8 @@ const run = () => main_awaiter(void 0, void 0, void 0, function* () {
                         name: jsonData.name,
                         shortDescription: jsonData.shortDescription || "",
                         description: jsonData.description || "",
+                        type: jsonData.type,
+                        colour: jsonData.colour,
                     }, authToken);
                 }
                 if (file.status === "removed") {
